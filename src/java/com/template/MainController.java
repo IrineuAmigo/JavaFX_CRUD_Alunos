@@ -46,7 +46,7 @@ public class MainController
     }
 
     private void carregarAlunos(){
-        AlunosDAO objAlunoDAO = new AlunosDAO();
+        AlunosDAO objqAlunoDAO = new AlunosDAO();
         ArrayList<AlunosDTO> listaAlunos = objAlunoDAO.listarAlunos();
         tblAlunos.setItems (FXCollections.observableArrayList(listaAlunos));
     }
@@ -54,12 +54,15 @@ public class MainController
 
     private void atualizarAluno() {
        AlunosDAO objAlunosDAO = new AlunosDAO();
-
+       ArrayList<AlunosDTO> atualizarAluno = objAlunosDAO.atualizarAluno();
+       tbtAlunos.setItems (FXCollections.observableArrayList(atualizaAlunos));
     }
 
 
     private void excluirAluno(){
             AlunosDAO objAlunosDAO = new AlunosDAO();
+            ArrayList<AlunosDTO> excluirAluno = objAlunosDAO.excluirAluno();
+            tbtAlunos.setItems (FXCollections.observableArrayList(excluirAluno));
 
         }
     }

@@ -16,19 +16,19 @@
             <TextField fx:id="txtCidade" layoutX="118.0" layoutY="194.0" prefHeight="25.0" prefWidth="430.0" />
             <TextField fx:id="txtNome" layoutX="117.0" layoutY="50.0" prefHeight="25.0" prefWidth="430.0" />
             <TextField fx:id="txtTelefone" layoutX="117.0" layoutY="156.0" prefHeight="25.0" prefWidth="430.0" />
-            <Button fx:id="btnAdicionar" layoutX="570.0" layoutY="187.0" mnemonicParsing="false" prefHeight="33.0" prefWidth="83.0" style="-fx-background-color: #187bf5; -fx-font-weight: bold;" text="Adicionar">
+            <Button fx:id="btnCadastrar" layoutX="570.0" layoutY="195.0" mnemonicParsing="false" onAction="#btnCadastrarAction" prefHeight="33.0" prefWidth="83.0" style="-fx-background-color: #187bf5; -fx-font-weight: bold;" text="Cadastrar">
                <font>
                   <Font size="14.0" />
                </font></Button>
-            <Button fx:id="btnAlterar" layoutX="568.0" layoutY="142.0" mnemonicParsing="false" prefHeight="33.0" prefWidth="83.0" style="-fx-background-color: yellow; -fx-font-weight: bold;" text="Alterar">
+            <Button fx:id="btnAtualizar" layoutX="568.0" layoutY="152.0" mnemonicParsing="false" onAction="#btnAtualizarAction" prefHeight="33.0" prefWidth="83.0" style="-fx-background-color: yellow; -fx-font-weight: bold;" text="Atualizar">
                <font>
                   <Font size="14.0" />
                </font></Button>
-            <Button fx:id="btnExcluir" layoutX="568.0" layoutY="99.0" mnemonicParsing="false" prefHeight="33.0" prefWidth="83.0" style="-fx-background-color: #f58618; -fx-font-weight: bold;" text="Excluir">
+            <Button fx:id="btnExcluir" layoutX="568.0" layoutY="109.0" mnemonicParsing="false" onAction="#btnExcluirAction" prefHeight="33.0" prefWidth="83.0" style="-fx-background-color: #f58618; -fx-font-weight: bold;" text="Excluir">
                <font>
                   <Font size="14.0" />
                </font></Button>
-            <Button fx:id="btnSalvar" layoutX="568.0" layoutY="52.0" mnemonicParsing="false" prefHeight="33.0" prefWidth="83.0" style="-fx-background-color: #18f5c9; -fx-font-weight: bold;" text="Salvar">
+            <Button fx:id="btnSalvar" layoutX="568.0" layoutY="66.0" mnemonicParsing="false" onAction="#btnSalvarAction" prefHeight="33.0" prefWidth="83.0" style="-fx-background-color: #18f5c9; -fx-font-weight: bold;" text="Salvar">
                <font>
                   <Font size="14.0" />
                </font></Button>
@@ -53,6 +53,11 @@
             <Text layoutX="55.0" layoutY="141.0" strokeType="OUTSIDE" strokeWidth="0.0" style="-fx-font-weight: bold;" text="Endereço:" />
             <Text layoutX="55.0" layoutY="104.0" strokeType="OUTSIDE" strokeWidth="0.0" style="-fx-font-weight: bold;" text="Email:" />
             <Text layoutX="56.0" layoutY="67.0" strokeType="OUTSIDE" strokeWidth="0.0" style="-fx-font-weight: bold;" text="Nome:" />
+            <Button fx:id="btnLimpar" layoutX="568.0" layoutY="23.0" mnemonicParsing="false" onAction="#btnLimparAction" prefHeight="33.0" prefWidth="83.0" style="-fx-background-color: yellow; -fx-font-weight: bold;" text="Limpar">
+               <font>
+                  <Font size="14.0" />
+               </font>
+            </Button>
          </children>
       </Pane>
    </children>

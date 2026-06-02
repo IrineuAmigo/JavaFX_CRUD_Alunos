@@ -28,7 +28,7 @@
                <font>
                   <Font size="14.0" />
                </font></Button>
-            <Button fx:id="btnListar" layoutX="568.0" layoutY="52.0" mnemonicParsing="false" prefHeight="33.0" prefWidth="83.0" style="-fx-background-color: #18f5c9; -fx-font-weight: bold;" text="Listar">
+            <Button fx:id="btnSalvar" layoutX="568.0" layoutY="52.0" mnemonicParsing="false" prefHeight="33.0" prefWidth="83.0" style="-fx-background-color: #18f5c9; -fx-font-weight: bold;" text="Salvar">
                <font>
                   <Font size="14.0" />
                </font></Button>
@@ -41,7 +41,7 @@
                   <TreeTableColumn fx:id="colEmail" prefWidth="150.0" text="email" />
                   <TreeTableColumn fx:id="colEndereco" prefWidth="150.0" text="endereco" />
                   <TreeTableColumn fx:id="colTelefone" text="telefone" />
-                  <TreeTableColumn fx:id="colCidade" text="cidade" />
+                  <TreeTableColumn fx:id="colCidade" prefWidth="83.0" text="cidade" />
               </columns>
             </TreeTableView>
             <Text layoutX="56.0" layoutY="210.0" strokeType="OUTSIDE" strokeWidth="0.0" style="-fx-font-weight: bold;" text="Cidade: " />

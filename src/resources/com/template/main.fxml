@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.TableColumn?>
+<?import javafx.scene.control.TableView?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.Pane?>
+<?import javafx.scene.text.Font?>
+<?import javafx.scene.text.Text?>
+
+<AnchorPane prefHeight="481.0" prefWidth="683.0" xmlns="http://javafx.com/javafx/25" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.template.MainController">
+   <children>
+      <Pane prefHeight="523.0" prefWidth="696.0" style="-fx-background-color: #32a873;">
+         <children>
+            <TextField fx:id="txtCidade" layoutX="118.0" layoutY="243.0" prefHeight="25.0" prefWidth="430.0" text="Bauru" />
+            <TextField fx:id="txtNome" layoutX="117.0" layoutY="105.0" prefHeight="25.0" prefWidth="430.0" text="nnnnnnnn" />
+            <TextField fx:id="txtTelefone" layoutX="117.0" layoutY="209.0" prefHeight="25.0" prefWidth="430.0" text="1234" />
+            <Button fx:id="btnCadastrar" layoutX="570.0" layoutY="236.0" mnemonicParsing="false" onAction="#btnCadastrarAction" prefHeight="33.0" prefWidth="83.0" style="-fx-background-color: #187bf5; -fx-font-weight: bold;" text="Cadastrar">
+               <font>
+                  <Font size="14.0" />
+               </font></Button>
+            <Button fx:id="btnAlterar" layoutX="568.0" layoutY="192.0" mnemonicParsing="false" onAction="#btnAlterarAction" prefHeight="33.0" prefWidth="83.0" style="-fx-background-color: yellow; -fx-font-weight: bold;" text="Alterar">
+               <font>
+                  <Font size="14.0" />
+               </font></Button>
+            <Button fx:id="btnExcluir" layoutX="568.0" layoutY="148.0" mnemonicParsing="false" onAction="#btnExcluirAction" prefHeight="33.0" prefWidth="83.0" style="-fx-background-color: #f58618; -fx-font-weight: bold;" text="Excluir">
+               <font>
+                  <Font size="14.0" />
+               </font></Button>
+            <Button fx:id="btnSalvar" layoutX="568.0" layoutY="104.0" mnemonicParsing="false" onAction="#btnSalvarAction" prefHeight="33.0" prefWidth="83.0" style="-fx-background-color: #18f5c9; -fx-font-weight: bold;" text="Salvar">
+               <font>
+                  <Font size="14.0" />
+               </font></Button>
+            <TextField fx:id="txtEndereco" layoutX="117.0" layoutY="174.0" prefHeight="25.0" prefWidth="430.0" text="endereço" />
+            <TextField fx:id="txtEmail" layoutX="117.0" layoutY="140.0" prefHeight="25.0" prefWidth="430.0" text="email@email" />
+
+            <Text layoutX="56.0" layoutY="260.0" strokeType="OUTSIDE" strokeWidth="0.0" style="-fx-font-weight: bold;" text="Cidade: " />
+            <Text layoutX="127.0" layoutY="33.0" strokeType="OUTSIDE" strokeWidth="0.0" style="-fx-font-weight: bold;" text="Cadastro de Alunos" textAlignment="CENTER" wrappingWidth="409.0">
+               <font>
+                  <Font size="24.0" />
+               </font></Text>
+            <Text layoutX="56.0" layoutY="227.0" strokeType="OUTSIDE" strokeWidth="0.0" style="-fx-font-weight: bold;" text="Telefone: " />
+            <Text layoutX="55.0" layoutY="192.0" strokeType="OUTSIDE" strokeWidth="0.0" style="-fx-font-weight: bold;" text="Endereço:" />
+            <Text layoutX="55.0" layoutY="160.0" strokeType="OUTSIDE" strokeWidth="0.0" style="-fx-font-weight: bold;" text="Email:" />
+            <Text layoutX="56.0" layoutY="122.0" strokeType="OUTSIDE" strokeWidth="0.0" style="-fx-font-weight: bold;" text="Nome:" />
+            <Button fx:id="btnLimpar" layoutX="568.0" layoutY="58.0" mnemonicParsing="false" onAction="#btnLimparAction" prefHeight="33.0" prefWidth="83.0" style="-fx-background-color: yellow; -fx-font-weight: bold;" text="Limpar">
+               <font>
+                  <Font size="14.0" />
+               </font>
+            </Button>
+            <TableView fx:id="tblAlunos" layoutX="14.0" layoutY="309.0" prefHeight="200.0" prefWidth="643.0">
+               <columns>
+                  <TableColumn fx:id="colId" prefWidth="30.0" text="id" />
+                  <TableColumn fx:id="colNome" prefWidth="158.0" text="nome" />
+                  <TableColumn fx:id="colEmail" prefWidth="106.0" text="email" />
+                  <TableColumn fx:id="colEndereco" minWidth="6.0" prefWidth="128.0" text="endereco" />
+                  <TableColumn fx:id="colTelefone" prefWidth="115.0" text="telefone" />
+                  <TableColumn fx:id="colCidade" prefWidth="105.0" text="cidade" />
+               </columns>
+            </TableView>
+
+         </children>
+
+      </Pane>
+   </children>
+</AnchorPane>

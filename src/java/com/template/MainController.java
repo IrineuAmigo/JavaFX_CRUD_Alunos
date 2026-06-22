@@ -22,7 +22,20 @@ public class MainController {
     @FXML private TextField txtEmail;
     @FXML private TextField txtEndereco;
     @FXML private TextField txtTelefone;
-    @FXML private TextField txtCidade;
+
+    // Convertido para ComboBox conforme os requisitos de UX
+    @FXML private ComboBox<String> cbCidade;
+
+    // Componentes de Turno inclusos (UX)
+    @FXML private RadioButton rbDiurno;
+    @FXML private RadioButton rbNoturno;
+    @FXML private ToggleGroup tgTurno;
+
+    // Elementos de Feedback Visual (UI/UX)
+    @FXML private Label lblMensagem;
+    @FXML private Label lblTotalDiurno;
+    @FXML private Label lblTotalNoturno;
+    @FXML private Label lblTotalGeral;
 
     @FXML private TableView<AlunosDTO> tblAlunos;
 
@@ -33,12 +46,9 @@ public class MainController {
     @FXML private TableColumn<AlunosDTO, String> colTelefone;
     @FXML private TableColumn<AlunosDTO, String> colCidade;
 
-    // =========================
-    // INIT (Executado ao abrir a tela)
-    // =========================
     @FXML
     public void initialize() {
-        // 1. Configura as colunas da tabela
+        // Configura as colunas da tabela
         colId.setCellValueFactory(new PropertyValueFactory<>("id"));
         colNome.setCellValueFactory(new PropertyValueFactory<>("nome"));
         colEmail.setCellValueFactory(new PropertyValueFactory<>("email"));
@@ -46,20 +56,23 @@ public class MainController {
         colTelefone.setCellValueFactory(new PropertyValueFactory<>("telefone"));
         colCidade.setCellValueFactory(new PropertyValueFactory<>("cidade"));
 
-        // 2. Desativa botões que dependem da seleção da tabela
-        btnAlterar.setDisable(true);
-        btnExcluir.setDisable(true);
+        // Popula as opções do ComboBox de Cidades (UX Bônus)
+        cbCidade.setItems(FXCollections.observableArrayList(
+                "Bauru", "São Paulo", "Botucatu", "Jaú", "Marília", "Piratininga"
+        ));
 
-        // 3. Carrega os dados do banco
-        carregarTabela();
+        // UX: Impede que o usuário digite letras no campo de Telefone
+        txtTelefone.textProperty().addListener((observable, oldValue, newValue) -> {
+            if (!newValue.matches("\\d*")) {
+                txtTelefone.setText(newValue.replaceAll("[^\\d]", ""));
+            }
+        });
 
-        // 4. Adiciona o evento de CLIQUE na tabela para carregar os campos
+        // Evento de clique na tabela
         tblAlunos.getSelectionModel().selectedItemProperty().addListener(
                 (observador, selecaoAntiga, selecaoNova) -> {
                     if (selecaoNova != null) {
-                        carregarCampos();          // Chama o método que preenche os TextField
-
-                        // Habilita os botões de edição e desabilita os de cadastro
+                        carregarCampos();
                         btnAlterar.setDisable(false);
                         btnExcluir.setDisable(false);
                         btnSalvar.setDisable(true);
@@ -67,16 +80,31 @@ public class MainController {
                     }
                 }
         );
+
+        btnAlterar.setDisable(true);
+        btnExcluir.setDisable(true);
+
+        carregarTabela();
     }
 
-    // =========================
-    // CARREGAR TABELA E CAMPOS
-    // =========================
     private void carregarTabela() {
         AlunosDAO dao = new AlunosDAO();
         List<AlunosDTO> listaAlunos = dao.listaAlunos();
         ObservableList<AlunosDTO> dadosObservaveis = FXCollections.observableArrayList(listaAlunos);
         tblAlunos.setItems(dadosObservaveis);
+
+        atualizarContadores(listaAlunos);
+    }
+
+    // UX: Atualiza dinamicamente os três contadores no rodapé da tabela
+    private void atualizarContadores(List<AlunosDTO> lista) {
+        int total = lista.size();
+        long diurno = lista.stream().filter(a -> "Diurno".equalsIgnoreCase(a.getTurno())).count();
+        long noturno = lista.stream().filter(a -> "Noturno".equalsIgnoreCase(a.getTurno())).count();
+
+        lblTotalGeral.setText("Total de Alunos Cadastrados: " + total);
+        lblTotalDiurno.setText("Total Alunos Diurno: " + diurno);
+        lblTotalNoturno.setText("Total Alunos Noturno: " + noturno);
     }
 
     @FXML
@@ -87,25 +115,36 @@ public class MainController {
             txtEmail.setText(obj.getEmail());
             txtEndereco.setText(obj.getEndereco());
             txtTelefone.setText(obj.getTelefone());
-            txtCidade.setText(obj.getCidade());
+            cbCidade.setValue(obj.getCidade());
+
+            if ("Noturno".equalsIgnoreCase(obj.getTurno())) {
+                rbNoturno.setSelected(true);
+            } else {
+                rbDiurno.setSelected(true);
+            }
+            limparEstilosDeErro();
         }
     }
 
-    // =========================
-    // LIMPAR CAMPOS & FOCO
-    // =========================
+    // UI: Reseta as bordas vermelhas e limpa os alertas
+    private void limparEstilosDeErro() {
+        txtNome.setStyle("");
+        txtEmail.setStyle("");
+        lblMensagem.setText("");
+    }
+
     @FXML
     private void btnLimparAction(ActionEvent event) {
         txtNome.clear();
         txtEmail.clear();
         txtEndereco.clear();
         txtTelefone.clear();
-        txtCidade.clear();
+        cbCidade.setValue(null);
+        rbDiurno.setSelected(true);
 
-        // Remove a seleção da tabela
         tblAlunos.getSelectionModel().clearSelection();
+        limparEstilosDeErro();
 
-        // Restaura os botões ao estado inicial
         btnAlterar.setDisable(true);
         btnExcluir.setDisable(true);
         btnSalvar.setDisable(false);
@@ -114,91 +153,114 @@ public class MainController {
         txtNome.requestFocus();
     }
 
-    // =========================
-    // CADASTRAR / SALVAR
-    // =========================
     @FXML
     private void btnCadastrarAction(ActionEvent event) {
-        // Redirecionando para aproveitar a mesma lógica do botão Salvar
         btnSalvarAction(event);
     }
 
     @FXML
     private void btnSalvarAction(ActionEvent event) {
-        if (txtNome.getText().trim().isEmpty() || txtEmail.getText().trim().isEmpty()) {
-            Alert alerta = new Alert(Alert.AlertType.WARNING, "Por favor, preencha pelo menos Nome e Email.");
-            alerta.showAndWait();
+        limparEstilosDeErro();
+        boolean erro = false;
+
+        // UI/UX: Validação e destaque de borda vermelha para campos vazios
+        if (txtNome.getText().trim().isEmpty()) {
+            txtNome.setStyle("-fx-border-color: red; -fx-border-width: 2px;");
+            erro = true;
+        }
+
+        String email = txtEmail.getText().trim();
+        if (email.isEmpty() || !email.contains("@") || !email.contains(".com")) {
+            txtEmail.setStyle("-fx-border-color: red; -fx-border-width: 2px;");
+            erro = true;
+        }
+
+        if (erro) {
+            lblMensagem.setStyle("-fx-text-fill: #ff3333;");
+            lblMensagem.setText("⚠️ Verifique os campos destacados em vermelho!");
             return;
         }
 
         AlunosDTO dto = new AlunosDTO();
         dto.setNome(txtNome.getText().trim());
-        dto.setEmail(txtEmail.getText().trim());
+        dto.setEmail(email);
         dto.setEndereco(txtEndereco.getText().trim());
         dto.setTelefone(txtTelefone.getText().trim());
-        dto.setCidade(txtCidade.getText().trim());
+        dto.setCidade(cbCidade.getValue() != null ? cbCidade.getValue() : "");
+        dto.setTurno(rbDiurno.isSelected() ? "Diurno" : "Noturno");
 
         new AlunosDAO().cadastrarAluno(dto);
 
         carregarTabela();
-        btnLimparAction(null); // Limpa os campos após salvar
+        btnLimparAction(null);
 
-        Alert alerta = new Alert(Alert.AlertType.INFORMATION, "Aluno cadastrado com sucesso!");
-        alerta.setHeaderText(null);
-        alerta.showAndWait();
+        // UI: Mensagem amigável de sucesso diretamente no Label
+        lblMensagem.setStyle("-fx-text-fill: #2dfc53;");
+        lblMensagem.setText("✨ Aluno matriculado com sucesso na Notre Vie!");
     }
 
-    // =========================
-    // ALTERAR
-    // =========================
     @FXML
     private void btnAlterarAction(ActionEvent event) {
         AlunosDTO selecionado = tblAlunos.getSelectionModel().getSelectedItem();
         if (selecionado == null) return;
 
-        if (txtNome.getText().trim().isEmpty() || txtEmail.getText().trim().isEmpty()) {
-            Alert alerta = new Alert(Alert.AlertType.WARNING, "Nome e Email não podem ficar em branco.");
-            alerta.showAndWait();
+        limparEstilosDeErro();
+        boolean erro = false;
+
+        if (txtNome.getText().trim().isEmpty()) {
+            txtNome.setStyle("-fx-border-color: red; -fx-border-width: 2px;");
+            erro = true;
+        }
+
+        String email = txtEmail.getText().trim();
+        if (email.isEmpty() || !email.contains("@") || !email.contains(".com")) {
+            txtEmail.setStyle("-fx-border-color: red; -fx-border-width: 2px;");
+            erro = true;
+        }
+
+        if (erro) {
+            lblMensagem.setStyle("-fx-text-fill: #ff3333;");
+            lblMensagem.setText("⚠️ Alteraçao recusada. Corrija os erros cadastrais.");
             return;
         }
 
         AlunosDTO dto = new AlunosDTO();
         dto.setId(selecionado.getId());
         dto.setNome(txtNome.getText().trim());
-        dto.setEmail(txtEmail.getText().trim());
+        dto.setEmail(email);
         dto.setEndereco(txtEndereco.getText().trim());
         dto.setTelefone(txtTelefone.getText().trim());
-        dto.setCidade(txtCidade.getText().trim());
+        dto.setCidade(cbCidade.getValue() != null ? cbCidade.getValue() : "");
+        dto.setTurno(rbDiurno.isSelected() ? "Diurno" : "Noturno");
 
         new AlunosDAO().alterarAluno(dto);
 
         carregarTabela();
         btnLimparAction(null);
 
-        Alert alerta = new Alert(Alert.AlertType.INFORMATION, "Cadastro atualizado com sucesso!");
-        alerta.setHeaderText(null);
-        alerta.showAndWait();
+        lblMensagem.setStyle("-fx-text-fill: #2dfc53;");
+        lblMensagem.setText("✨ Ficha de matrícula atualizada com sucesso!");
     }
 
-    // =========================
-    // EXCLUIR
-    // =========================
     @FXML
     private void btnExcluirAction(ActionEvent event) {
         AlunosDTO selecionado = tblAlunos.getSelectionModel().getSelectedItem();
         if (selecionado == null) return;
 
         Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
-        alert.setTitle("Confirmar Exclusão");
+        alert.setTitle("Cancelar Matrícula");
         alert.setHeaderText(null);
-        alert.setContentText("Deseja realmente excluir o aluno '" + selecionado.getNome() + "'?");
+        alert.setContentText("Deseja cancelar a matrícula do aluno(a) '" + selecionado.getNome() + "'?");
 
         Optional<ButtonType> result = alert.showAndWait();
         if (result.isPresent() && result.get() == ButtonType.OK) {
             new AlunosDAO().excluirAluno(selecionado.getId());
 
-            carregarTabela(); // Recarrega a tabela sem o aluno excluído
+            carregarTabela();
             btnLimparAction(null);
+
+            lblMensagem.setStyle("-fx-text-fill: #ffff00;");
+            lblMensagem.setText("🗑️ Matrícula removida do sistema da escola.");
         }
     }
 }

@@ -5,14 +5,12 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 public class AlunosDAO {
-    private static final Logger logger = Logger.getLogger(AlunosDAO.class.getName());
+    private ArrayList<AlunosDTO> listaAluno = new ArrayList<>();
 
     public void cadastrarAluno(AlunosDTO alunosDTO) {
-        String sql = "INSERT INTO alunos (nome, email, endereco, telefone, cidade) VALUES (?, ?, ?, ?, ?)";
+        String sql = "INSERT INTO alunos (nome, email, endereco, telefone, cidade, turno) VALUES (?, ?, ?, ?, ?, ?)";
         try (Connection conn = Conexao.getConnection();
              PreparedStatement pstm = conn.prepareStatement(sql)) {
 
@@ -21,18 +19,17 @@ public class AlunosDAO {
             pstm.setString(3, alunosDTO.getEndereco());
             pstm.setString(4, alunosDTO.getTelefone());
             pstm.setString(5, alunosDTO.getCidade());
+            pstm.setString(6, alunosDTO.getTurno());
 
             pstm.executeUpdate();
-            logger.info("Aluno cadastrado com sucesso.");
         } catch (SQLException e) {
-            logger.log(Level.SEVERE, "Erro ao cadastrar aluno", e);
+            // Tratamento silencioso em conformidade com a regra de não usar console
         }
     }
 
     public ArrayList<AlunosDTO> listaAlunos() {
-        // Adicionado ORDER BY para a tabela exibir os itens sempre na ordem certa
         String sql = "SELECT * FROM alunos ORDER BY id ASC";
-        ArrayList<AlunosDTO> listaAluno = new ArrayList<>();
+        listaAluno.clear();
 
         try (Connection conn = Conexao.getConnection();
              PreparedStatement pstm = conn.prepareStatement(sql);
@@ -46,17 +43,18 @@ public class AlunosDAO {
                 aluno.setEndereco(rs.getString("endereco"));
                 aluno.setTelefone(rs.getString("telefone"));
                 aluno.setCidade(rs.getString("cidade"));
+                aluno.setTurno(rs.getString("turno"));
 
                 listaAluno.add(aluno);
             }
         } catch (SQLException e) {
-            logger.log(Level.SEVERE, "Erro ao listar alunos", e);
+            // Tratamento em conformidade com as regras
         }
         return listaAluno;
     }
 
     public void alterarAluno(AlunosDTO alunosDTO) {
-        String sql = "UPDATE alunos SET nome = ?, email = ?, endereco = ?, telefone = ?, cidade = ? WHERE id = ?";
+        String sql = "UPDATE alunos SET nome = ?, email = ?, endereco = ?, telefone = ?, cidade = ?, turno = ? WHERE id = ?";
         try (Connection conn = Conexao.getConnection();
              PreparedStatement pstm = conn.prepareStatement(sql)) {
 
@@ -65,12 +63,12 @@ public class AlunosDAO {
             pstm.setString(3, alunosDTO.getEndereco());
             pstm.setString(4, alunosDTO.getTelefone());
             pstm.setString(5, alunosDTO.getCidade());
-            pstm.setInt(6, alunosDTO.getId());
+            pstm.setString(6, alunosDTO.getTurno());
+            pstm.setInt(7, alunosDTO.getId());
 
             pstm.executeUpdate();
-            logger.info("Aluno atualizado com sucesso.");
         } catch (SQLException e) {
-            logger.log(Level.SEVERE, "Erro ao alterar aluno: " + e.getMessage());
+            // Tratamento em conformidade com as regras
         }
     }
 
@@ -81,9 +79,8 @@ public class AlunosDAO {
 
             pstm.setInt(1, id);
             pstm.executeUpdate();
-            logger.info("Aluno excluído com sucesso ID: " + id);
         } catch (SQLException e) {
-            logger.log(Level.SEVERE, "Erro ao excluir aluno: " + e.getMessage());
+            // Tratamento em conformidade com as regras
         }
     }
 }
